@@ -42,7 +42,25 @@ El sistema implementa el **MVP** solicitado:
 * Seguridad basada en JWT y control de acceso basado en roles (RBAC).
 * Gestión de archivos bajo el contrato `StorageService`.
 * Auditoría de estados y procesos de limpieza de datos.
-## Diagramas
+
+## 8. Requerimientos Funcionales
+* Autenticación con JWT y login por email/password.
+* Autorización por roles (ADMIN, OPERATOR) con restricciones por endpoint.
+* CRUD parcial de órdenes: crear, listar, filtrar y ver detalle.
+* Cambio de estado de órdenes: aprobar o rechazar solo si están en PENDING.
+* Subir y descargar factura (imagen o PDF) mediante multipart/form-data.
+* Notificación a sistema externo cuando la orden pasa a APPROVED.
+* Auditoría de cambios de estado con trigger en `order_status_log`.
+* Proceso de archivado de órdenes REJECTED mediante stored procedure.
+
+## 9. Requerimientos No Funcionales
+* Manejo centralizado de errores y códigos HTTP coherentes.
+* Tiempos de espera y reintentos controlados en integración externa.
+* Registro de errores de integración y trazabilidad básica.
+* Separación clara de capas para facilitar mantenimiento y pruebas.
+* Seguridad mínima: expiración de JWT y control de acceso por rol.
+
+## 10. Diagramas
 Los siguientes diagramas sirven como apoyo para explicar de forma rápida el flujo y la estructura del sistema. Están en Mermaid para facilitar su lectura en GitHub.
 
 ### Casos de uso (roles)
