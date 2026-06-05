@@ -25,12 +25,18 @@ Se han integrado componentes clave de Spring Cloud para asegurar la calidad bajo
 * **Strategy Pattern:** Implementado en `StorageService` para alternar entre proveedores de almacenamiento (ej. local para desarrollo, S3 para producción) sin modificar la lógica de negocio.
 * **Event-Driven:** Se utiliza el sistema de eventos de Spring para disparar notificaciones tras cambios de estado, promoviendo un código desacoplado y reactivo.
 
-## 5. Auditoría y Persistencia
+## 5. Base de Datos (SQL)
+Se utilizará una **base de datos relacional (SQL)**.  
+**PostgreSQL** es la opción principal por su soporte robusto de *triggers* y *stored procedures*.  
+Para desarrollo local, puede usarse **H2** en memoria por simplicidad.  
+La elección de SQL es clave porque el assessment exige auditoría con trigger y un procedimiento almacenado transaccional, lo cual no encaja bien en un modelo NoSQL.
+
+## 6. Auditoría y Persistencia
 Para garantizar el cumplimiento de los requerimientos de auditoría, se implementaron:
 * **Triggers SQL:** Para asegurar la inmutabilidad del historial de estados (`order_status_log`).
 * **Stored Procedures:** Gestión de procesos de archivado mediante transacciones (`BEGIN/COMMIT/ROLLBACK`), garantizando la integridad de los datos sensibles de forma eficiente.
 
-## 6. Alcance del Proyecto
+## 7. Alcance del Proyecto
 El sistema implementa el **MVP** solicitado:
 * Gestión de ciclos de vida de órdenes (PENDING, APPROVED, REJECTED).
 * Seguridad basada en JWT y control de acceso basado en roles (RBAC).
