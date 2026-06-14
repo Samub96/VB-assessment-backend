@@ -53,20 +53,15 @@ public class DataSeeder implements ApplicationRunner {
         Role operatorRole = roleRepository.findById(RoleName.OPERATOR)
                 .orElseGet(() -> roleRepository.save(new Role(RoleName.OPERATOR)));
 
-        if (!userRepository.existsByEmail(adminEmail)) {
-            User admin = new User();
-            admin.setEmail(adminEmail);
-            admin.setPasswordHash(passwordEncoder.encode(adminPassword));
-            admin.setRoles(Set.of(adminRole));
-            userRepository.save(admin);
-        }
+        upsertSeedUser(adminEmail, adminPassword, adminRole);
+        upsertSeedUser(operatorEmail, operatorPassword, operatorRole);
+    }
 
-        if (!userRepository.existsByEmail(operatorEmail)) {
-            User operator = new User();
-            operator.setEmail(operatorEmail);
-            operator.setPasswordHash(passwordEncoder.encode(operatorPassword));
-            operator.setRoles(Set.of(operatorRole));
-            userRepository.save(operator);
-        }
+    private void upsertSeedUser(String email, String rawPassword, Role role) {
+        User user = userRepository.findByEmail(email).orElseGet(User::new);
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(rawPassword));
+        user.setRoles(Set.of(role));
+        userRepository.save(user);
     }
 }

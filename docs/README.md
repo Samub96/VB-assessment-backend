@@ -36,6 +36,14 @@ Para garantizar el cumplimiento de los requerimientos de auditoría, se implemen
 * **Triggers SQL:** Para asegurar la inmutabilidad del historial de estados (`order_status_log`).
 * **Stored Procedures:** Gestión de procesos de archivado mediante transacciones (`BEGIN/COMMIT/ROLLBACK`), garantizando la integridad de los datos sensibles de forma eficiente.
 
+### Esquema y migraciones
+La base de datos se crea con **Flyway**:
+- esquema principal en `db/migration/common`
+- objetos específicos por motor en `db/migration/{vendor}`
+
+El motor activo define el trigger de auditoría y el procedimiento `archive_rejected_orders()` para mover órdenes rechazadas a tablas de archivo.
+El endpoint administrativo `POST /api/v1/orders/archive-rejected` invoca ese proceso dentro de una transacción.
+
 ## 7. Alcance del Proyecto
 El sistema implementa el **MVP** solicitado:
 * Gestión de ciclos de vida de órdenes (PENDING, APPROVED, REJECTED).
@@ -61,6 +69,31 @@ El sistema implementa el **MVP** solicitado:
 * Seguridad mínima: expiración de JWT y control de acceso por rol.
 
 ## 10. Diagramas
+
+<!-- (document unchanged above) -->
+
+## 11. Deployment & Docker
+
+Se incluyó soporte para contenerización en el repositorio:
+- Dockerfile (multi-stage) en la raíz: compila con Maven y empaqueta en una imagen JRE 17 ligera.
+- docker-compose.yml: levanta Postgres 15 y la aplicación; mapea puertos 5432 y 8080.
+
+Comandos básicos:
+- docker-compose up --build
+- docker build -t backpayments:latest .
+- docker run -e SPRING_DATASOURCE_URL=jdbc:postgresql://<db>:5432/backpayments -e SPRING_DATASOURCE_USERNAME=postgres -e SPRING_DATASOURCE_PASSWORD=postgres -p 8080:8080 backpayments:latest
+
+Notas:
+- El dockerignore está configurado para evitar incluir artefactos grandes (target, .git, etc.). El wrapper mvnw y la carpeta .mvn deben estar en el contexto si se usa mvnw. Ver .dockerignore para ajustes.
+
+## 12. Autenticación y Postman
+
+Añadido: docs/AUTH_POSTMAN.md — contiene ejemplos de curl para obtener JWT y llamar al endpoint administrativo POST /api/v1/orders/archive-rejected.
+
+## Más información
+
+Para detalles de implementación revisá docs/IMPLEMENTATION.md (contiene resumen de DB, triggers/procedures, tests y recomendaciones para producción).
+
 Los siguientes diagramas sirven como apoyo para explicar de forma rápida el flujo y la estructura del sistema. Están en Mermaid para facilitar su lectura en GitHub.
 
 ### Casos de uso (roles)

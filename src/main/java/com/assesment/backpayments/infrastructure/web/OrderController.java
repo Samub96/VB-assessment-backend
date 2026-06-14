@@ -4,6 +4,7 @@ import com.assesment.backpayments.application.dto.CreateOrderRequest;
 import com.assesment.backpayments.application.dto.OrderResponse;
 import com.assesment.backpayments.application.dto.OrderSummaryResponse;
 import com.assesment.backpayments.application.service.InvoiceDownload;
+import com.assesment.backpayments.application.service.OrderArchivingService;
 import com.assesment.backpayments.application.service.OrderService;
 import com.assesment.backpayments.domain.model.OrderStatus;
 import jakarta.validation.Valid;
@@ -39,9 +40,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderArchivingService orderArchivingService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderArchivingService orderArchivingService) {
         this.orderService = orderService;
+        this.orderArchivingService = orderArchivingService;
     }
 
     @PostMapping
@@ -84,6 +87,13 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrderResponse> reject(@PathVariable UUID id) {
         return ResponseEntity.ok(orderService.rejectOrder(id));
+    }
+
+    @PostMapping("/archive-rejected")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> archiveRejectedOrders() {
+        orderArchivingService.archiveRejectedOrders();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = "/{id}/invoice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
