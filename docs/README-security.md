@@ -40,3 +40,50 @@ app.security.jwt.secret=${APP_SECURITY_JWT_SECRET:change-me-please-change-me-ple
 app.security.jwt.expiration=PT2H
 app.seed.enabled=${APP_SEED_ENABLED:true}
 ```
+
+## Debug
+Para ver más detalle en consola:
+- `APP_LOG_LEVEL_ROOT=INFO`
+- `APP_LOG_LEVEL_APP=DEBUG`
+- `APP_LOG_LEVEL_SECURITY=DEBUG`
+- `APP_LOG_LEVEL_HIBERNATE_SQL=DEBUG`
+- `APP_LOG_LEVEL_HIBERNATE_BIND=TRACE`
+
+En Docker ya están definidas por defecto en `docker-compose.yml`.
+
+## Endpoints para Frontend
+
+Base URL: `http://localhost:8080`
+
+| Método | Endpoint | Rol | Recibe |
+| --- | --- | --- | --- |
+| POST | `/api/v1/auth/login` | Público | JSON: `{"email":"...","password":"..."}` |
+| POST | `/api/v1/orders` | OPERATOR | JSON: `{"amount":123.45,"currency":"USD","description":"..."}` |
+| GET | `/api/v1/orders` | ADMIN | Query params opcionales: `status`, `currency`, `minAmount`, `maxAmount`, `createdFrom`, `createdTo` |
+| GET | `/api/v1/orders/{id}` | ADMIN, OPERATOR | `id` UUID en path |
+| POST | `/api/v1/orders/{id}/approve` | ADMIN | `id` UUID en path |
+| POST | `/api/v1/orders/{id}/reject` | ADMIN | `id` UUID en path |
+| POST | `/api/v1/orders/archive-rejected` | ADMIN | Sin body |
+| POST | `/api/v1/orders/{id}/invoice` | OPERATOR | `multipart/form-data` con part `file` |
+| GET | `/api/v1/orders/{id}/invoice` | ADMIN | `id` UUID en path |
+
+### Respuesta de login
+```json
+{
+  "token": "jwt...",
+  "tokenType": "Bearer",
+  "expiresAt": "2026-06-14T01:00:00Z",
+  "roles": ["ROLE_ADMIN"]
+}
+```
+
+### Headers requeridos
+```http
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+### Notas para el front
+- `401` => token ausente o inválido; redirigir al login.
+- `403` => el usuario no tiene el rol requerido.
+- El upload de factura usa `multipart/form-data` y el campo debe llamarse `file`.

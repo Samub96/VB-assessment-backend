@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: backpayments
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/backpayments
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      APP_DB_PLATFORM: postgresql
+      APP_SEED_ENABLED: "true"
+      APP_LOG_LEVEL_ROOT: INFO
+      APP_LOG_LEVEL_APP: DEBUG
+      APP_LOG_LEVEL_SECURITY: DEBUG
+      APP_LOG_LEVEL_HIBERNATE_SQL: DEBUG
+      APP_LOG_LEVEL_HIBERNATE_BIND: TRACE
+    depends_on:
+      - db
+
+volumes:
+  db_data:
