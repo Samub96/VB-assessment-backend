@@ -1,6 +1,5 @@
 package com.assesment.backpayments.infrastructure.storage;
 
-import com.assesment.backpayments.application.service.OrderArchivingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +10,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class OrderRepositoryIntegrationTest {
@@ -44,5 +45,8 @@ class OrderRepositoryIntegrationTest {
 
         Integer archived = jdbcTemplate.queryForObject("SELECT count(*) FROM archived_orders WHERE id = ?", Integer.class, orderId.toString());
         assertEquals(1, archived.intValue());
+
+        List<OrderRepository.ArchivedOrderView> archivedList = orderRepository.listArchivedOrders();
+        assertTrue(archivedList.stream().anyMatch(item -> orderId.toString().equals(item.getId())));
     }
 }

@@ -68,11 +68,9 @@ El sistema implementa el **MVP** solicitado:
 * Separación clara de capas para facilitar mantenimiento y pruebas.
 * Seguridad mínima: expiración de JWT y control de acceso por rol.
 
-## 10. Diagramas
+#
 
-<!-- (document unchanged above) -->
-
-## 11. Deployment & Docker
+## 10. Deployment & Docker
 
 Se incluyó soporte para contenerización en el repositorio:
 - Dockerfile (multi-stage) en la raíz: compila con Maven y empaqueta en una imagen JRE 17 ligera.
@@ -86,9 +84,16 @@ Comandos básicos:
 Notas:
 - El dockerignore está configurado para evitar incluir artefactos grandes (target, .git, etc.). El wrapper mvnw y la carpeta .mvn deben estar en el contexto si se usa mvnw. Ver .dockerignore para ajustes.
 
-## 12. Autenticación y Postman
+## 11. Autenticación y Postman
 
 Añadido: docs/AUTH_POSTMAN.md — contiene ejemplos de curl para obtener JWT y llamar al endpoint administrativo POST /api/v1/orders/archive-rejected.
+
+## 12. Pruebas backend
+
+Añadido: `docs/README-tests.md` con:
+- comando de ejecución (`./mvnw test`),
+- estado de la suite,
+- listado de pruebas por módulo (seguridad, órdenes, archivado, integración, storage y manejo de errores).
 
 ## Más información
 

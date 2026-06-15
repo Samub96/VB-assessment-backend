@@ -1,6 +1,7 @@
 package com.assesment.backpayments.infrastructure.web;
 
 import com.assesment.backpayments.application.dto.CreateOrderRequest;
+import com.assesment.backpayments.application.dto.ArchivedOrderSummaryResponse;
 import com.assesment.backpayments.application.dto.OrderResponse;
 import com.assesment.backpayments.application.dto.OrderSummaryResponse;
 import com.assesment.backpayments.application.service.InvoiceDownload;
@@ -94,6 +95,12 @@ public class OrderController {
     public ResponseEntity<Void> archiveRejectedOrders() {
         orderArchivingService.archiveRejectedOrders();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/archived")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ArchivedOrderSummaryResponse>> listArchivedOrders() {
+        return ResponseEntity.ok(orderArchivingService.listArchivedOrders());
     }
 
     @PostMapping(value = "/{id}/invoice", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

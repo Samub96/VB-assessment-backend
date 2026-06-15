@@ -33,6 +33,11 @@ curl -i -X POST http://localhost:8080/api/v1/orders/archive-rejected \
 
 - Respuesta esperada: 204 No Content si el usuario tiene rol ADMIN.
 
+Listar archivadas (ADMIN):
+
+curl -i http://localhost:8080/api/v1/orders/archived \\
+  -H "Authorization: Bearer $TOKEN"
+
 3) Uso en Postman
 
 - Crear request POST http://localhost:8080/api/v1/auth/login con body JSON y obtener token.

@@ -64,6 +64,7 @@ Base URL: `http://localhost:8080`
 | POST | `/api/v1/orders/{id}/approve` | ADMIN | `id` UUID en path |
 | POST | `/api/v1/orders/{id}/reject` | ADMIN | `id` UUID en path |
 | POST | `/api/v1/orders/archive-rejected` | ADMIN | Sin body |
+| GET | `/api/v1/orders/archived` | ADMIN | Lista órdenes archivadas |
 | POST | `/api/v1/orders/{id}/invoice` | OPERATOR | `multipart/form-data` con part `file` |
 | GET | `/api/v1/orders/{id}/invoice` | ADMIN | `id` UUID en path |
 
