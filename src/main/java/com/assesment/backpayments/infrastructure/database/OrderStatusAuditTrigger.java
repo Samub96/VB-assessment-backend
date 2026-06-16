@@ -24,7 +24,8 @@ public class OrderStatusAuditTrigger implements Trigger {
         }
 
         try (PreparedStatement statement = conn.prepareStatement(
-                "insert into order_status_log (id, order_id, from_status, to_status, changed_at, changed_by) values (?, ?, ?, ?, current_timestamp, ?)")) {
+                "insert into order_status_log (id, order_id, from_status, to_status, changed_at, changed_by) " +
+                        "values (?, ?, ?, ?, current_timestamp, ?)")) {
             statement.setObject(1, UUID.randomUUID());
             statement.setObject(2, newRow[0]);
             statement.setString(3, String.valueOf(oldRow[1]));
